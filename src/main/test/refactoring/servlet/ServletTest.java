@@ -45,7 +45,7 @@ public class ServletTest {
         }
 
 
-        server = new Server(8081);
+        server = new Server(PORT);
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
@@ -82,17 +82,70 @@ public class ServletTest {
         String addResponse = reader.readAsText(url).trim();
         Assert.assertEquals("OK", addResponse);
 
-        url = getAddUrl("dog", "20");
-        addResponse = reader.readAsText(url).trim();
-        Assert.assertEquals("OK", addResponse);
-
         String getResponse = reader.readAsText(getGetUrl()).trim();
         String expected =
         """
         <html><body>
         cat\t10</br>
-        dog\t20</br>
         </body></html>""";
+        Assert.assertEquals(expected, getResponse);
+    }
+
+    @Test
+    public void addWorksAtomically() {
+        URL url = getAddUrl("cat", "10");
+        String addResponse = reader.readAsText(url).trim();
+        Assert.assertEquals("OK", addResponse);
+
+        String getResponse = reader.readAsText(getGetUrl()).trim();
+        String expected =
+                """
+                <html><body>
+                cat\t10</br>
+                </body></html>""";
+        Assert.assertEquals(expected, getResponse);
+
+        url = getAddUrl("dog", "20");
+        addResponse = reader.readAsText(url).trim();
+        Assert.assertEquals("OK", addResponse);
+
+        getResponse = reader.readAsText(getGetUrl()).trim();
+        expected =
+                """
+                <html><body>
+                cat\t10</br>
+                dog\t20</br>
+                </body></html>""";
+        Assert.assertEquals(expected, getResponse);
+    }
+
+    @Test
+    public void sameNames() {
+        URL url = getAddUrl("cat", "10");
+        String addResponse = reader.readAsText(url).trim();
+        Assert.assertEquals("OK", addResponse);
+
+        url = getAddUrl("dog", "20");
+        addResponse = reader.readAsText(url).trim();
+        Assert.assertEquals("OK", addResponse);
+
+        url = getAddUrl("cat", "30");
+        addResponse = reader.readAsText(url).trim();
+        Assert.assertEquals("OK", addResponse);
+
+        url = getAddUrl("dog", "40");
+        addResponse = reader.readAsText(url).trim();
+        Assert.assertEquals("OK", addResponse);
+
+        String getResponse = reader.readAsText(getGetUrl()).trim();
+        String expected =
+                """
+                <html><body>
+                cat\t10</br>
+                dog\t20</br>
+                cat\t30</br>
+                dog\t40</br>
+                </body></html>""";
         Assert.assertEquals(expected, getResponse);
     }
 
