@@ -194,6 +194,33 @@ public class ServletTest {
         Assert.assertEquals(expected, getResponse);
     }
 
+    @Test
+    public void minChangesAfterAdd() {
+        addProduct("dog", 20);
+        addProduct("fish", 30);
+
+        String getResponse = reader.readAsText(getQueryUrl("min")).trim();
+        String expected =
+                """
+                        <html><body>
+                        <h1>Product with min price: </h1>
+                        dog\t20</br>
+                        </body></html>""";
+        Assert.assertEquals(expected, getResponse);
+
+        addProduct("frog", 40);
+        addProduct("cat", 10);
+
+        getResponse = reader.readAsText(getQueryUrl("min")).trim();
+        expected =
+                """
+                        <html><body>
+                        <h1>Product with min price: </h1>
+                        cat\t10</br>
+                        </body></html>""";
+        Assert.assertEquals(expected, getResponse);
+    }
+
     // todo add test checking that queries don't change anything
 
 
