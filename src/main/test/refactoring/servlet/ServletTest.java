@@ -282,6 +282,33 @@ public class ServletTest {
         Assert.assertEquals(expected, getResponse);
     }
 
+    @Test
+    public void countChangesAfterAdd() {
+        addProduct("dog", 20);
+        addProduct("fish", 30);
+
+        String getResponse = reader.readAsText(getQueryUrl("count")).trim();
+        String expected =
+                """
+                        <html><body>
+                        Number of products:\040
+                        2
+                        </body></html>""";
+        Assert.assertEquals(expected, getResponse);
+
+        addProduct("frog", 40);
+        addProduct("cat", 10);
+
+        getResponse = reader.readAsText(getQueryUrl("count")).trim();
+        expected =
+                """
+                        <html><body>
+                        Number of products:\040
+                        4
+                        </body></html>""";
+        Assert.assertEquals(expected, getResponse);
+    }
+
     // todo add test checking that queries don't change anything
 
 
