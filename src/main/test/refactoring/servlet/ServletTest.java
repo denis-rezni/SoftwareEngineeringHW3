@@ -78,9 +78,7 @@ public class ServletTest {
 
     @Test
     public void simpleAddAndGet() {
-        URL url = getAddUrl("cat", "10");
-        String addResponse = reader.readAsText(url).trim();
-        Assert.assertEquals("OK", addResponse);
+        addProduct("cat", 10);
 
         String getResponse = reader.readAsText(getGetUrl()).trim();
         String expected =
@@ -93,9 +91,7 @@ public class ServletTest {
 
     @Test
     public void addWorksAtomically() {
-        URL url = getAddUrl("cat", "10");
-        String addResponse = reader.readAsText(url).trim();
-        Assert.assertEquals("OK", addResponse);
+        addProduct("cat", 10);
 
         String getResponse = reader.readAsText(getGetUrl()).trim();
         String expected =
@@ -105,9 +101,7 @@ public class ServletTest {
                 </body></html>""";
         Assert.assertEquals(expected, getResponse);
 
-        url = getAddUrl("dog", "20");
-        addResponse = reader.readAsText(url).trim();
-        Assert.assertEquals("OK", addResponse);
+        addProduct("dog", 20);
 
         getResponse = reader.readAsText(getGetUrl()).trim();
         expected =
@@ -121,21 +115,10 @@ public class ServletTest {
 
     @Test
     public void sameNames() {
-        URL url = getAddUrl("cat", "10");
-        String addResponse = reader.readAsText(url).trim();
-        Assert.assertEquals("OK", addResponse);
-
-        url = getAddUrl("dog", "20");
-        addResponse = reader.readAsText(url).trim();
-        Assert.assertEquals("OK", addResponse);
-
-        url = getAddUrl("cat", "30");
-        addResponse = reader.readAsText(url).trim();
-        Assert.assertEquals("OK", addResponse);
-
-        url = getAddUrl("dog", "40");
-        addResponse = reader.readAsText(url).trim();
-        Assert.assertEquals("OK", addResponse);
+        addProduct("cat", 10);
+        addProduct("dog", 20);
+        addProduct("cat", 30);
+        addProduct("dog", 40);
 
         String getResponse = reader.readAsText(getGetUrl()).trim();
         String expected =
@@ -149,6 +132,29 @@ public class ServletTest {
         Assert.assertEquals(expected, getResponse);
     }
 
+    @Test
+    public void simpleMaxTest() {
+        addProduct("dog", 20);
+        addProduct("cat", 10);
+        addProduct("frog", 40);
+        addProduct("fish", 30);
+
+        String getResponse = reader.readAsText(getQueryUrl("max")).trim();
+        String expected =
+                """
+                        <html><body>
+                        <h1>Product with max price: </h1>
+                        frog\t40</br>
+                        </body></html>""";
+        Assert.assertEquals(expected, getResponse);
+    }
+
+
+    private void addProduct(String name, int price) {
+        URL url = getAddUrl(name, String.valueOf(price));
+        String addResponse = reader.readAsText(url).trim();
+        Assert.assertEquals("OK", addResponse);
+    }
 
     private URL getGetUrl() {
         Config config = new Config(HOST, PORT, "get-products");
@@ -158,5 +164,10 @@ public class ServletTest {
     private URL getAddUrl(String name, String price) {
         Config config = new Config(HOST, PORT, "add-product");
         return builder.buildUrl(config, List.of(new Parameter("name", name), new Parameter("price", price)));
+    }
+
+    private URL getQueryUrl(String command) {
+        Config config = new Config(HOST, PORT, "query");
+        return builder.buildUrl(config, List.of(new Parameter("command", command)));
     }
 }
