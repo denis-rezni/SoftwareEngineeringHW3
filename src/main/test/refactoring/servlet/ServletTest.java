@@ -177,6 +177,26 @@ public class ServletTest {
     }
 
 
+    @Test
+    public void simpleMinTest() {
+        addProduct("frog", 40);
+        addProduct("cat", 10);
+        addProduct("fish", 30);
+        addProduct("dog", 20);
+
+        String getResponse = reader.readAsText(getQueryUrl("min")).trim();
+        String expected =
+                """
+                        <html><body>
+                        <h1>Product with min price: </h1>
+                        cat\t10</br>
+                        </body></html>""";
+        Assert.assertEquals(expected, getResponse);
+    }
+
+    // todo add test checking that queries don't change anything
+
+
     private void addProduct(String name, int price) {
         URL url = getAddUrl(name, String.valueOf(price));
         String addResponse = reader.readAsText(url).trim();
