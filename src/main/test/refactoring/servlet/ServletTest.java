@@ -133,6 +133,25 @@ public class ServletTest {
     }
 
     @Test
+    public void orderIsPreserved() {
+        addProduct("fish", 40);
+        addProduct("dog", 20);
+        addProduct("cat", 10);
+        addProduct("frog", 30);
+
+        String getResponse = reader.readAsText(getGetUrl()).trim();
+        String expected =
+                """
+                <html><body>
+                fish\t40</br>
+                dog\t20</br>
+                cat\t10</br>
+                frog\t30</br>
+                </body></html>""";
+        Assert.assertEquals(expected, getResponse);
+    }
+
+    @Test
     public void simpleMaxTest() {
         addProduct("dog", 20);
         addProduct("cat", 10);
