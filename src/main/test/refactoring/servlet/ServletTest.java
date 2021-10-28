@@ -309,6 +309,61 @@ public class ServletTest {
         Assert.assertEquals(expected, getResponse);
     }
 
+    @Test
+    public void queriesNotChangingGet() {
+        addProduct("dog", 20);
+        addProduct("cat", 10);
+        addProduct("frog", 40);
+        addProduct("fish", 30);
+
+        String getResponse = reader.readAsText(getQueryUrl("count")).trim();
+        String expected =
+                """
+                        <html><body>
+                        Number of products:\040
+                        4
+                        </body></html>""";
+        Assert.assertEquals(expected, getResponse);
+
+        getResponse = reader.readAsText(getQueryUrl("sum")).trim();
+        expected =
+                """
+                        <html><body>
+                        Summary price:\040
+                        100
+                        </body></html>""";
+        Assert.assertEquals(expected, getResponse);
+
+        getResponse = reader.readAsText(getQueryUrl("max")).trim();
+        expected =
+                """
+                        <html><body>
+                        <h1>Product with max price: </h1>
+                        frog\t40</br>
+                        </body></html>""";
+        Assert.assertEquals(expected, getResponse);
+
+        getResponse = reader.readAsText(getQueryUrl("min")).trim();
+        expected =
+                """
+                        <html><body>
+                        <h1>Product with min price: </h1>
+                        cat\t10</br>
+                        </body></html>""";
+        Assert.assertEquals(expected, getResponse);
+
+        getResponse = reader.readAsText(getGetUrl()).trim();
+        expected =
+                """
+                <html><body>
+                dog\t20</br>
+                cat\t10</br>
+                frog\t40</br>
+                fish\t30</br>
+                </body></html>""";
+        Assert.assertEquals(expected, getResponse);
+    }
+
     // todo add test checking that queries don't change anything
 
 
