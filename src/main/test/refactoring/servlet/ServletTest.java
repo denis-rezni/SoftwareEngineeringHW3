@@ -255,6 +255,33 @@ public class ServletTest {
         Assert.assertEquals(expected, getResponse);
     }
 
+    @Test
+    public void sumChangesAfterAdd() {
+        addProduct("dog", 20);
+        addProduct("fish", 30);
+
+        String getResponse = reader.readAsText(getQueryUrl("sum")).trim();
+        String expected =
+                """
+                        <html><body>
+                        Summary price:\040
+                        50
+                        </body></html>""";
+        Assert.assertEquals(expected, getResponse);
+
+        addProduct("frog", 40);
+        addProduct("cat", 10);
+
+        getResponse = reader.readAsText(getQueryUrl("sum")).trim();
+        expected =
+                """
+                        <html><body>
+                        Summary price:\040
+                        100
+                        </body></html>""";
+        Assert.assertEquals(expected, getResponse);
+    }
+
     // todo add test checking that queries don't change anything
 
 
