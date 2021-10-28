@@ -149,6 +149,33 @@ public class ServletTest {
         Assert.assertEquals(expected, getResponse);
     }
 
+    @Test
+    public void maxChangesAfterAdd() {
+        addProduct("dog", 20);
+        addProduct("cat", 10);
+
+        String getResponse = reader.readAsText(getQueryUrl("max")).trim();
+        String expected =
+                """
+                        <html><body>
+                        <h1>Product with max price: </h1>
+                        dog\t20</br>
+                        </body></html>""";
+        Assert.assertEquals(expected, getResponse);
+
+        addProduct("fish", 30);
+        addProduct("frog", 40);
+
+        getResponse = reader.readAsText(getQueryUrl("max")).trim();
+        expected =
+                """
+                        <html><body>
+                        <h1>Product with max price: </h1>
+                        frog\t40</br>
+                        </body></html>""";
+        Assert.assertEquals(expected, getResponse);
+    }
+
 
     private void addProduct(String name, int price) {
         URL url = getAddUrl(name, String.valueOf(price));
