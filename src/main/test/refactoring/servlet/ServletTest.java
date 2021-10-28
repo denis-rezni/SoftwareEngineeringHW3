@@ -221,6 +221,40 @@ public class ServletTest {
         Assert.assertEquals(expected, getResponse);
     }
 
+    @Test
+    public void simpleSumTest() {
+        addProduct("dog", 20);
+        addProduct("cat", 10);
+        addProduct("frog", 40);
+        addProduct("fish", 30);
+
+        String getResponse = reader.readAsText(getQueryUrl("sum")).trim();
+        String expected =
+                """
+                        <html><body>
+                        Summary price:\040
+                        100
+                        </body></html>""";
+        Assert.assertEquals(expected, getResponse);
+    }
+
+    @Test
+    public void simpleCountTest() {
+        addProduct("dog", 20);
+        addProduct("cat", 10);
+        addProduct("frog", 40);
+        addProduct("fish", 30);
+
+        String getResponse = reader.readAsText(getQueryUrl("count")).trim();
+        String expected =
+                """
+                        <html><body>
+                        Number of products:\040
+                        4
+                        </body></html>""";
+        Assert.assertEquals(expected, getResponse);
+    }
+
     // todo add test checking that queries don't change anything
 
 
