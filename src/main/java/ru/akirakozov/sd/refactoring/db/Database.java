@@ -11,8 +11,10 @@ import java.util.List;
 
 public class Database {
 
+    private final String DATABASE_URL = "jdbc:sqlite:test.db";
+
     public void addProduct(String name, int price) {
-        try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
+        try (Connection c = DriverManager.getConnection(DATABASE_URL)) {
             String sql = "INSERT INTO PRODUCT " +
                     "(NAME, PRICE) VALUES (\"" + name + "\"," + price + ")";
             Statement stmt = c.createStatement();
@@ -25,7 +27,7 @@ public class Database {
 
     public List<Item> getProducts() {
         List<Item> items = new ArrayList<>();
-        try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
+        try (Connection c = DriverManager.getConnection(DATABASE_URL)) {
             Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM PRODUCT");
 
@@ -46,7 +48,7 @@ public class Database {
     }
 
     public Item getMaxItem() {
-        try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
+        try (Connection c = DriverManager.getConnection(DATABASE_URL)) {
             Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM PRODUCT ORDER BY PRICE DESC LIMIT 1");
 
@@ -67,7 +69,7 @@ public class Database {
     }
 
     public Item getMinItem() {
-        try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
+        try (Connection c = DriverManager.getConnection(DATABASE_URL)) {
             Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM PRODUCT ORDER BY PRICE LIMIT 1");
 
@@ -88,7 +90,7 @@ public class Database {
     }
 
     public int getCount() {
-        try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
+        try (Connection c = DriverManager.getConnection(DATABASE_URL)) {
             Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM PRODUCT");
             int count = 0;
@@ -107,7 +109,7 @@ public class Database {
     }
 
     public long getSum() {
-        try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
+        try (Connection c = DriverManager.getConnection(DATABASE_URL)) {
             Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT SUM(price) FROM PRODUCT");
             long sum = 0;
