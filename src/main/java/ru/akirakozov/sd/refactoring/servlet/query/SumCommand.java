@@ -1,6 +1,7 @@
 package ru.akirakozov.sd.refactoring.servlet.query;
 
 import ru.akirakozov.sd.refactoring.db.Database;
+import ru.akirakozov.sd.refactoring.html.HtmlWriter;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -18,9 +19,7 @@ public class SumCommand implements Command {
         Database db = new Database();
         long sum = db.getSum();
 
-        response.getWriter().println("<html><body>");
-        response.getWriter().println("Summary price: ");
-        response.getWriter().println(sum);
-        response.getWriter().println("</body></html>");
+        HtmlWriter writer = new HtmlWriter(response);
+        writer.writeSum(sum);
     }
 }

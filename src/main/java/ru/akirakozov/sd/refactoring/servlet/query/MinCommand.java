@@ -1,6 +1,7 @@
 package ru.akirakozov.sd.refactoring.servlet.query;
 
 import ru.akirakozov.sd.refactoring.db.Database;
+import ru.akirakozov.sd.refactoring.html.HtmlWriter;
 import ru.akirakozov.sd.refactoring.utils.Item;
 
 import javax.servlet.http.HttpServletResponse;
@@ -19,9 +20,7 @@ public class MinCommand implements Command {
         Database db = new Database();
         Item minItem = db.getMinItem();
 
-        response.getWriter().println("<html><body>");
-        response.getWriter().println("<h1>Product with min price: </h1>");
-        response.getWriter().println(minItem.getName() + "\t" + minItem.getPrice() + "</br>");
-        response.getWriter().println("</body></html>");
+        HtmlWriter writer = new HtmlWriter(response);
+        writer.writeMin(minItem);
     }
 }
