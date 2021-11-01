@@ -24,8 +24,8 @@ import java.util.List;
 
 public class ServletTest {
 
-    private UrlReader reader = new UrlReader();
-    private UrlBuilder builder = new UrlBuilder();
+    private final UrlReader reader = new UrlReader();
+    private final UrlBuilder builder = new UrlBuilder();
     private Server server;
 
     private final String HOST = "localhost";

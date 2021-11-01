@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Database {
 
-    public void addProduct(String name, long price) {
+    public void addProduct(String name, int price) {
         try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
             String sql = "INSERT INTO PRODUCT " +
                     "(NAME, PRICE) VALUES (\"" + name + "\"," + price + ")";
@@ -43,5 +43,84 @@ public class Database {
         }
 
         return items;
+    }
+
+    public Item getMaxItem() {
+        try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
+            Statement stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM PRODUCT ORDER BY PRICE DESC LIMIT 1");
+
+            Item item = null;
+            while (rs.next()) {
+                String name = rs.getString("name");
+                int price = rs.getInt("price");
+                item = new Item(name, price);
+            }
+
+            rs.close();
+            stmt.close();
+
+            return item;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Item getMinItem() {
+        try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
+            Statement stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM PRODUCT ORDER BY PRICE LIMIT 1");
+
+            Item item = null;
+            while (rs.next()) {
+                String name = rs.getString("name");
+                int price = rs.getInt("price");
+                item = new Item(name, price);
+            }
+
+            rs.close();
+            stmt.close();
+
+            return item;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int getCount() {
+        try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
+            Statement stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM PRODUCT");
+            int count = 0;
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+
+            rs.close();
+            stmt.close();
+
+            return count;
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public long getSum() {
+        try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
+            Statement stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT SUM(price) FROM PRODUCT");
+            long sum = 0;
+            if (rs.next()) {
+                sum = rs.getLong(1);
+            }
+
+            rs.close();
+            stmt.close();
+            return sum;
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
