@@ -383,7 +383,11 @@ public class ServletTest {
         Assert.assertEquals(expected, getResponse);
     }
 
-    // todo add test checking that queries don't change anything
+    @Test
+    public void unknownCommand() {
+        String response = reader.readAsText(getQueryUrl("aboba")).trim();
+        Assert.assertEquals("Unknown command: aboba" , response);
+    }
 
 
     private void addProduct(String name, int price) {
